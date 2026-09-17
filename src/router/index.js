@@ -2,49 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ProjectView from '../views/ProjectView.vue'
+import TaskBoardView from '../views/TaskBoardView.vue'
+import TimesheetView from '../views/TimesheetView.vue'
+import UserManagementView from '../views/UserManagementView.vue' // Import view baru
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      name: 'login',
-      component: LoginView,
-      // Jika sudah login, cegah user kembali ke halaman login
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('access_token')) {
-          next({ name: 'dashboard' })
-        } else {
-          next()
-        }
-      }
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
-      meta: { requiresAuth: true } // Penanda bahwa rute ini butuh login
-    },
-    {
-      path: '/projects',
-      name: 'projects',
-      component: ProjectView,
-      meta: { requiresAuth: true }
-    }
+    { path: '/', name: 'login', component: LoginView },
+    { path: '/dashboard', name: 'dashboard', component: DashboardView },
+    { path: '/projects', name: 'projects', component: ProjectView },
+    { path: '/tasks', name: 'tasks', component: TaskBoardView },
+    { path: '/timesheets', name: 'timesheets', component: TimesheetView },
+    { path: '/users', name: 'users', component: UserManagementView }, // Rute baru
   ]
 })
-
-// Middleware Global Vue Router
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('access_token')
-
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    // Jika rute butuh login tapi tidak ada token, lempar ke halaman login
-    next({ name: 'login' })
-  } else {
-    next()
-  }
-})
-
 
 export default router
